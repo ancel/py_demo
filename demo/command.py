@@ -7,6 +7,7 @@ if __name__ == '__main__':
     # 执行命令
     res = subprocess.Popen(command_s,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,close_fds=True) 
     print(res.returncode)
+    # res.communicate()
     print(res.wait())
     result = res.stdout.readlines() 
     for x in result:
