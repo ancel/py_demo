@@ -22,3 +22,8 @@ d = '2017-05-21T19:00:00.000Z'
 print(utc2local(datetime.datetime.strptime(d, UTC_FORMAT)).strftime('%Y-%m-%d %H:%M:%S'))
 utc_time = datetime.datetime(2014, 9, 18, 10, 42, 16, 126000)
 print(utc2local(utc_time).strftime('%Y-%m-%d %H:%M:%S'))
+
+start_time = datetime.datetime.now()
+# {实际代码}
+end_time = datetime.datetime.now()
+    print('use time: {} (s)'.format(str((end_time-start_time).seconds)))

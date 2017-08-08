@@ -7,8 +7,8 @@ USER='bigdata'
 PASSWD='bigdb@2015qwe'
 
 def get_conn():
-    # return pymysql.connect(host='w03.test.yulore.com', port=3306,user='bigdata',passwd='bigdb@2015qwe',db='log_stat',charset='UTF8')
     return pymysql.connect(host=HOST, port=PORT,user=USER,passwd=PASSWD,db='log_stat',charset='UTF8')
+    
 def get_count(log_date):
     conn = get_conn()
     cur = conn.cursor()
