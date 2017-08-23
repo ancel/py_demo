@@ -15,6 +15,8 @@ def get_count(log_date):
     sql = 'SELECT COUNT(0) FROM api_user_count_day WHERE date_time = %s'
     log_date_str = log_date.strftime('%Y-%m-%d')
     cur.execute(sql, (log_date_str))
+    # 如果是更新或者插入的话需要执行commit
+    # conn.commit()
     cur.close()
     conn.close()
     # return cur.fetchall()

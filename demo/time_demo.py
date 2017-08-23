@@ -25,5 +25,6 @@ print(utc2local(utc_time).strftime('%Y-%m-%d %H:%M:%S'))
 
 start_time = datetime.datetime.now()
 # {实际代码}
+print(start_time)
 end_time = datetime.datetime.now()
-    print('use time: {} (s)'.format(str((end_time-start_time).seconds)))
+print('use time: {} (s)'.format(str((end_time-start_time).seconds)))
