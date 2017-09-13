@@ -24,7 +24,7 @@ def get_dirs(path):
 def ensure_dir(file_path):
     with LOCK:
         directory = os.path.dirname(file_path)
-        if not os.path.exists(directory):
+        if ''!=directory and not os.path.exists(directory):
             os.makedirs(directory)
 
 # 通过tail获取最后行
@@ -67,6 +67,18 @@ def get_last_not_blank_line(file_path):
                 f.seek(0, 0)        
                 return f.readline().strip().decode()  
 
+def get_line_count(file_path):
+    count = 0
+    with open(file_path, mode='rb') as f:
+        line_sperator = bytes('\n', encoding="utf8")
+        while True:  
+            buf = f.read(1024 * 8192)  
+            if not buf:  
+                break  
+            count += buf.count(line_sperator)  
+
+    return count
+
 
 if __name__ == '__main__':
     files = get_files('../')
@@ -77,5 +89,6 @@ if __name__ == '__main__':
     for f in dirs:
         print(f)
 
-    print(get_last_line('C:\\Users\\Li Yujie\\Desktop\\9.txt_mongo'))
-    print(get_last_not_blank_line('C:\\Users\\Li Yujie\\Desktop\\9.txt_mongo'))
+    print(get_last_line('date_util.py'))
+    print(get_last_not_blank_line('date_util.py'))
+    print(get_line_count('file_util.py'))
