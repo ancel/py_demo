@@ -28,3 +28,9 @@ start_time = datetime.datetime.now()
 print(start_time)
 end_time = datetime.datetime.now()
 print('use time: {} (s)'.format(str((end_time-start_time).seconds)))
+
+d = '2017-05-21 19:00:00'
+start = datetime.datetime.strptime(d, '%Y-%m-%d %H:%M:%S')
+d = '2017-05-21 14:00:00'
+end = datetime.datetime.strptime(d, '%Y-%m-%d %H:%M:%S')
+print(start<end)
