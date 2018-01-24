@@ -1,10 +1,26 @@
 import xlsxwriter
 import codecs
+import pandas as pd
 
 file_path = 'demo.xlsx'
-# Create an new Excel file and add a worksheet.
-workbook = xlsxwriter.Workbook(file_path)
-worksheet = workbook.add_worksheet()
+
+# 使用pandas包装excel处理类
+# Create a Pandas dataframe from the data.
+df = pd.DataFrame()
+# Create a Pandas Excel writer using XlsxWriter as the engine.
+writer = pd.ExcelWriter(file_path, engine='xlsxwriter', options={'strings_to_urls': False})
+
+# Convert the dataframe to an XlsxWriter Excel object.
+df.to_excel(writer, sheet_name='Sheet1')
+
+# Get the xlsxwriter objects from the dataframe writer object.
+workbook  = writer.book
+worksheet = writer.sheets['Sheet1']
+
+
+# 使用xlsxwriter
+# workbook = xlsxwriter.Workbook(file_path)
+# worksheet = workbook.add_worksheet()
 
 # Widen the first column to make the text clearer.
 worksheet.set_column('A:A', 20)
