@@ -43,6 +43,8 @@ if __name__ == '__main__':
                 column = 0
             for key in keys:
                 value = line_json[key]
+                if type(value)==type([]):
+                    value = ','.json(value)
                 worksheet.write(row, column, value)
                 column += 1
             row += 1
