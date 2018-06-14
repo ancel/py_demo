@@ -16,7 +16,8 @@ import log_demo_sub
 
 
 logging.config.fileConfig("logger.conf")
-LOGGER = logging.getLogger("root")
+# LOGGER = logging.getLogger("root")
+LOGGER = logging.getLogger(__name__)
 #主模块设置logger之后，子模块可以直接用如下方法获取到logger，而不需要进行任何设置
 # LOGGER = logging.getLogger()
 
