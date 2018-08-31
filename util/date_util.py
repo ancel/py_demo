@@ -1,5 +1,6 @@
 import datetime
 import calendar
+import time
 
 
 # 获取月第一天
@@ -37,6 +38,10 @@ def getLastDayOfLastMonth(d=datetime.date.today()):
         month -= 1
     days = calendar.monthrange(year, month)[1]   
     return datetime.date(year,month,1)+datetime.timedelta(days=days-1)
+
+def getCurrentTimeMillis():
+    t = time.time()
+    print (int(round(t * 1000)))
 
 if __name__ == '__main__':
     print(getFirstDayOfLastMonth().strftime('%Y-%m-%d %X'))

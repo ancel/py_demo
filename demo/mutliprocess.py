@@ -120,6 +120,7 @@ def sync_process_2():
     # 2、Manager对象类似于服务器与客户之间的通信 (server-client)，与我们在Internet上的活动很类似。
     # 我们用一个进程作为服务器，建立Manager来真正存放资源。其它的进程可以通过参数传递或者根据地址来访问Manager，
     # 建立连接后，操作服务器上的资源
+    # 嵌套共享数据也必须使用mananger生成
     server = multiprocessing.Manager()
     x    = server.Value('d', 0.0)
     arr  = server.Array('i', range(10))
@@ -157,7 +158,7 @@ if __name__ == '__main__':
     # multi_thread_pool()
     # multi_thread_pool_2()
     # sync()
-    # sync_process_2()
+    sync_process_2()
     # sync_process()
     # sync_thread()
     from concurrent.futures import ProcessPoolExecutor, as_completed
