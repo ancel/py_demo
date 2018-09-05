@@ -14,3 +14,5 @@ class DateEncoder(json.JSONEncoder):
             return json.JSONEncoder.default(self, obj) 
 
 print(json.dumps(over_flag, separators=(',',':'), ensure_ascii=False, cls=DateEncoder))
+# 对象转json
+print(json.dumps(x, separators=(',',':'), default=lambda obj: obj.__dict__, ensure_ascii=False))
