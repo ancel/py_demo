@@ -1,7 +1,8 @@
 import logging
 import logging.config
-
 import log_demo_sub
+
+
 
 
 
@@ -14,10 +15,10 @@ import log_demo_sub
 # logging.info('This is info message')
 # logging.warning('This is warning message')
 
-
-logging.config.fileConfig("logger.conf")
-# LOGGER = logging.getLogger("root")
+# 若要是所有模块都是用现有的日志配置，则需要在模块加载前加载配置文件，或者在加载配置文件的时候设定disable_existing_loggers=False
+logging.config.fileConfig("logger.conf", disable_existing_loggers=False)
 LOGGER = logging.getLogger(__name__)
+# LOGGER = logging.getLogger('root') 
 #主模块设置logger之后，子模块可以直接用如下方法获取到logger，而不需要进行任何设置
 # LOGGER = logging.getLogger()
 
@@ -25,5 +26,6 @@ LOGGER.debug('This is debug message')
 LOGGER.info('This is info message')
 LOGGER.warning('This is warning message')
 LOGGER.error('This is error message')
+
 
 log_demo_sub.say()
