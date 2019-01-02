@@ -5,4 +5,18 @@
 demo/__pycache__/
 util/*.pyc
 util/__pycache__/
+.idea/
+_trial_temp/
+conv_demo.py
+demo/MYPROG/
+demo/log/
+demo/myapp.log
+demo/run.log
+export.py
+haibo/
+import_mysql.py
+json_demo.py
+keras/
+search_match/
+util/util_test.py
 
