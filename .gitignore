@@ -19,4 +19,7 @@ json_demo.py
 keras/
 search_match/
 util/util_test.py
+keras_demo/pic_recogn/101_ObjectCategories/
+keras_demo/pic_recogn/pic_out/
+
 
