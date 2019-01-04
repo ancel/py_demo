@@ -3,11 +3,12 @@
 import cv2
 import numpy as np
  
-from keras.utils import np_utils, conv_utils
+from keras.utils import np_utils, conv_utils, plot_model
 from keras.models import Sequential
 from keras.layers import Convolution2D, MaxPooling2D, Flatten, Dropout, Dense, Activation
 from keras.optimizers import Adam
 from keras.backend.common import normalize_data_format
+import matplotlib.pyplot as plt
  
 import os
 import pickle
@@ -32,7 +33,7 @@ def eachFile(filepath):                 #将目录内的文件名放入列表中
         child = allDir.encode('gbk').decode('gbk')
         out.append(child)
     return out
- 
+
 def get_data(data_name,train_percentage=0.7,resize=True,data_format=None):   #从文件夹中获取图像数据
     file_name = os.path.join(pic_dir_out,data_name+str(Width)+"X"+str(Height)+".pkl")   
     if os.path.exists(file_name):           #判断之前是否有存到文件中
@@ -58,11 +59,11 @@ def get_data(data_name,train_percentage=0.7,resize=True,data_format=None):   #�
             img = cv2.imread(os.path.join(pic_dir_data,pic_dir,pic_name))
             if img is None:
                 continue
-            img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY) 
+            img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY) # BGR通道转单通道
             if (resize):
-                img = cv2.resize(img,(Width,Height))
+                img = cv2.resize(img,(Width,Height)) # 图片大小裁剪
             if (data_format == 'channels_last'):
-                img = img.reshape(-1,Width,Height,1)
+                img = img.reshape(-1,Width,Height,1)  # 图片形状调整
             elif (data_format == 'channels_first'):
                 img = img.reshape(-1,1,Width,Height)
             if (pic_index < train_count):
@@ -124,13 +125,33 @@ def get_2data(data_name,resize=True,data_format=None):   #当train和test数据�
                     y_test.append(label)
             if len(pic_set) != 0:        
                 label += 1
-    X_train = np.concatenate(X_train,axis=0)        
+    X_train = np.concatenate(X_train,axis=0)   # 沿0轴加入数组
     X_test = np.concatenate(X_test,axis=0)    
     y_train = np.array(y_train)
     y_test = np.array(y_test)
     pickle.dump([(X_train, y_train), (X_test, y_test)],open(file_name,"wb")) 
     return (X_train, y_train), (X_test, y_test)   
- 
+
+def show_acc(history):
+    # Plot training & validation accuracy values
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('Model accuracy')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc='upper left')
+    plt.show()
+
+def show_loss(history):
+    # Plot training & validation loss values
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('Model loss')
+    plt.ylabel('Loss')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc='upper left')
+    plt.show()
+
 def main():
     global Width, Height, pic_dir_out, pic_dir_data
     Width = 32
@@ -138,20 +159,25 @@ def main():
     num_classes = 102                   #Caltech101为102  cifar10为10
     pic_dir_out = 'pic_out/'  
     pic_dir_data = '101_ObjectCategories/'  
-    (X_train, y_train), (X_test, y_test) = get_data("Caltech101_gray_data_",0.7,data_format='channels_last')
+    data_format = 'channels_last'
+    (X_train, y_train), (X_test, y_test) = get_data("Caltech101_gray_data_",0.7,data_format=data_format)
     #pic_dir_data = 'E:/pic_cnn/pic_dataset/cifar10/'
     #(X_train, y_train), (X_test, y_test) = get_2data("Cifar10_gray_data_",resize=False,data_format='channels_last')
     
-    X_train = X_train/255.              #数据预处理
+    X_train = X_train/255.              #数据预处理, 数值调整为0-1
     X_test = X_test/255.
     print(X_train.shape)
     print(X_test.shape)
-    y_train = np_utils.to_categorical(y_train, num_classes)
+    y_train = np_utils.to_categorical(y_train, num_classes) # 生成分类数组，数组大小为num_classes, 下标y_train的值为1，其他为0
     y_test = np_utils.to_categorical(y_test, num_classes)
     
     model = Sequential()                #CNN构建
+    if 'channels_last'==data_format:
+        input_shape=(Width, Height, 1)
+    elif 'channels_first'==data_format:
+        input_shape=(1, Width, Height),
     model.add(Convolution2D(
-        input_shape=(Width, Height, 1),
+        input_shape=input_shape,
         #input_shape=(1, Width, Height),
         filters=8,
         kernel_size=3,
@@ -186,8 +212,10 @@ def main():
     if cm >= 1:
         model.load_weights(os.path.join(pic_dir_out,'cnn_model_Caltech101_'+cm_str+'.h5'))
         #model.load_weights(os.path.join(pic_dir_out,'cnn_model_Cifar10_'+cm_str+'.h5'))    
-    model.fit(X_train, y_train, epochs=10, batch_size=128,)   #正式训练数据
+    history = model.fit(X_train, y_train, epochs=10, batch_size=128,)   
+    # history = model.fit(X_train, y_train, validation_split=0.25, epochs=10, batch_size=128,)   #正式训练数据
     model.save_weights(os.path.join(pic_dir_out,'cnn_model_Caltech101_'+cm2_str+'.h5'))
+    plot_model(model, to_file=os.path.join(pic_dir_out,'cnn_model_Caltech101_'+cm2_str+'.png'), show_shapes=True, show_layer_names=True) # 存储神经网络结构
      
     print('\nTesting ------------')     #对测试集进行评估，额外获得metrics中的信息
     loss, accuracy = model.evaluate(X_test, y_test)
@@ -213,6 +241,9 @@ def main():
     print('top-'+str(N)+' all acc:',str(sum(class_acc))+'/'+str(len(test_arg)),sum(class_acc)/float(len(test_arg)))
     for i in range(num_classes):
         print (i, class_name_list[i], 'acc: '+str(class_acc[i])+'/'+str(class_count[i]))
+
+    show_acc(history)
+    show_loss(history)
     
 
 # 数据下载链接：http://www.vision.caltech.edu/Image_Datasets/Caltech101/101_ObjectCategories.tar.gz
