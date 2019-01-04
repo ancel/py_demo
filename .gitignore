@@ -9,7 +9,8 @@ util/__pycache__/
 _trial_temp/
 conv_demo.py
 demo/MYPROG/
-demo/log/
+log/
+logs/
 demo/myapp.log
 demo/run.log
 export.py
@@ -23,3 +24,4 @@ keras_demo/pic_recogn/101_ObjectCategories/
 keras_demo/pic_recogn/pic_out/
 
 
+test.py

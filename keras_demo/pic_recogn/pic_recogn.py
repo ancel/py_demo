@@ -9,6 +9,7 @@ from keras.layers import Convolution2D, MaxPooling2D, Flatten, Dropout, Dense, A
 from keras.optimizers import Adam
 from keras.backend.common import normalize_data_format
 import matplotlib.pyplot as plt
+from keras.callbacks import TensorBoard
  
 import os
 import pickle
@@ -183,17 +184,17 @@ def main():
         kernel_size=3,
         strides=1,
         padding='same',     
-        data_format='channels_last',
+        data_format=data_format,
     ))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(
         pool_size=2,
         strides=2,
-        data_format='channels_last',
+        data_format=data_format,
     ))
-    model.add(Convolution2D(16, 3, strides=1, padding='same', data_format='channels_last'))
+    model.add(Convolution2D(16, 3, strides=1, padding='same', data_format=data_format))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(2, 2, data_format='channels_last'))
+    model.add(MaxPooling2D(2, 2, data_format=data_format))
     model.add(Dropout(0.5))
     model.add(Flatten())
     model.add(Dense(256, activation='relu'))
@@ -211,9 +212,14 @@ def main():
     cm2_str = '' if (cm+1)==0 else str(cm+1)  
     if cm >= 1:
         model.load_weights(os.path.join(pic_dir_out,'cnn_model_Caltech101_'+cm_str+'.h5'))
-        #model.load_weights(os.path.join(pic_dir_out,'cnn_model_Cifar10_'+cm_str+'.h5'))    
-    history = model.fit(X_train, y_train, epochs=10, batch_size=128,)   
-    # history = model.fit(X_train, y_train, validation_split=0.25, epochs=10, batch_size=128,)   #正式训练数据
+        #model.load_weights(os.path.join(pic_dir_out,'cnn_model_Cifar10_'+cm_str+'.h5'))   
+    log_filepath = './logs' 
+    tb_cb = TensorBoard(log_dir=log_filepath, write_images=1, histogram_freq=1)  
+    # 设置log的存储位置，将网络权值以图片格式保持在tensorboard中显示，设置每一个周期计算一次网络的权值，
+    # 每层输出值的分布直方图，结束后命令行执行：tensorboard --logdir log路径
+    cbks = [tb_cb]
+    # history = model.fit(X_train, y_train, epochs=10, batch_size=128,)   
+    history = model.fit(X_train, y_train, validation_split=0.25, epochs=10, batch_size=128, callbacks=cbks)   #正式训练数据
     model.save_weights(os.path.join(pic_dir_out,'cnn_model_Caltech101_'+cm2_str+'.h5'))
     plot_model(model, to_file=os.path.join(pic_dir_out,'cnn_model_Caltech101_'+cm2_str+'.png'), show_shapes=True, show_layer_names=True) # 存储神经网络结构
      
@@ -242,12 +248,14 @@ def main():
     for i in range(num_classes):
         print (i, class_name_list[i], 'acc: '+str(class_acc[i])+'/'+str(class_count[i]))
 
-    show_acc(history)
-    show_loss(history)
+    # 查看训练效果
+    # show_acc(history)
+    # show_loss(history)
     
 
 # 数据下载链接：http://www.vision.caltech.edu/Image_Datasets/Caltech101/101_ObjectCategories.tar.gz
 # 代码来源：https://blog.csdn.net/u010632850/article/details/77102821
+# tensorboard查看训练效果：
 if __name__ == '__main__':
     main()
     # print('hello')
