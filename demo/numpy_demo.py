@@ -30,3 +30,15 @@ print(np.arange( 0, 2, 0.3 ))
 print(np.linspace( 0, 2, 9 ))
 from numpy import pi
 print(np.linspace( 0, 2*pi, 100 ))
+
+a = np.array([[1, 5, 5, 2],
+              [9, 6, 2, 8],
+              [3, 7, 9, 1]])
+
+# 返回沿axis轴最大值的
+print(np.argmax(a, axis=0)) 
+print(np.argmax(a, axis=1)) 
+
+# -1表示自适应
+print(np.arange(15).reshape(-1, 3, 5))
+print(np.arange(15).reshape(3, 5, -1))
