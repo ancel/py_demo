@@ -155,8 +155,8 @@ def show_loss(history):
 
 def main():
     global Width, Height, pic_dir_out, pic_dir_data
-    Width = 32
-    Height = 32
+    Width = 64
+    Height = 64
     num_classes = 102                   #Caltech101为102  cifar10为10
     pic_dir_out = 'pic_out/'  
     pic_dir_data = '101_ObjectCategories/'  
@@ -219,7 +219,7 @@ def main():
     # 每层输出值的分布直方图，结束后命令行执行：tensorboard --logdir log路径
     cbks = [tb_cb]
     # history = model.fit(X_train, y_train, epochs=10, batch_size=128,)   
-    history = model.fit(X_train, y_train, validation_split=0.25, epochs=10, batch_size=128, callbacks=cbks)   #正式训练数据
+    history = model.fit(X_train, y_train, validation_split=0.25, epochs=1, batch_size=128, callbacks=cbks)   #正式训练数据
     model.save_weights(os.path.join(pic_dir_out,'cnn_model_Caltech101_'+cm2_str+'.h5'))
     plot_model(model, to_file=os.path.join(pic_dir_out,'cnn_model_Caltech101_'+cm2_str+'.png'), show_shapes=True, show_layer_names=True) # 存储神经网络结构
      
@@ -229,20 +229,21 @@ def main():
     print('test loss: ', loss)
     print('test accuracy: ', accuracy)
     
-    class_name_list = get_name_list(pic_dir_data)    #获取top-N的每类的准确率
+    class_name_list = get_name_list(pic_dir_data)    #获取top-N的每类的准确率，top-N正确率是指图像识别算法给出前N个答案中有一个是正确的概率。
     #class_name_list = get_name_list(os.path.join(pic_dir_data,'train'))
     pred = model.predict(X_test, batch_size=128)
     N = 5
     pred_list = []
+    # 取出top-N的索引值
     for row in pred:
-        pred_list.append(row.argsort()[-N:][::-1])  #获取最大的N个值的下标
+        pred_list.append(row.argsort()[-N:][::-1])  #获取最大的N个值的下标,argsort获取数组值从小到大索引值，[::-1]表示倒序排列
     pred_array = np.array(pred_list)
     test_arg = np.argmax(y_test,axis=1)
-    class_count = [0 for _ in range(num_classes)]
-    class_acc = [0 for _ in range(num_classes)]
+    class_count = [0 for _ in range(num_classes)] # 各分类的数据量
+    class_acc = [0 for _ in range(num_classes)] # 各分类预测正确的数据量
     for i in range(len(test_arg)):
-        class_count[test_arg[i]] += 1
-        if test_arg[i] in pred_array[i]:
+        class_count[test_arg[i]] += 1 
+        if test_arg[i] in pred_array[i]: # test_arg[i]表示第i项的实际值，pred_array[i]表示第i项的预测结果
             class_acc[test_arg[i]] += 1
     print('top-'+str(N)+' all acc:',str(sum(class_acc))+'/'+str(len(test_arg)),sum(class_acc)/float(len(test_arg)))
     for i in range(num_classes):
