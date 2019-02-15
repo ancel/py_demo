@@ -29,6 +29,16 @@ def ensure_dir(file_path):
         if ''!=directory and not os.path.exists(directory):
             os.makedirs(directory)
 
+def get_relative_path(parent_path, child_path):
+    parent_path = os.path.abspath(parent_path)
+    child_path = os.path.abspath(child_path)
+    if not child_path.startswith(parent_path):
+        raise Exception('path can not be relative')
+    relative_path = child_path[len(parent_path):]
+    if relative_path.startswith('/'):
+        relative_path = relative_path[1:]
+    return relative_path
+
 # 通过tail获取最后行
 def get_tail_lines(file_path, line_count):
     res = subprocess.Popen('tail -{} {}'.format(str(line_count),file_path),
