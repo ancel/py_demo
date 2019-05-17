@@ -63,6 +63,22 @@ def multi_process_pool():
             print('fib({}) = {}'.format(num, result))
     print('COST: {}'.format(time.time() - start))
 
+# 进程池2
+def multi_process_pool():
+    import time
+    from concurrent.futures import ProcessPoolExecutor, as_completed
+    nums = range(25, 38)
+    
+    start = time.time()
+    with ProcessPoolExecutor(max_workers=3) as executor:
+        futures = {executor.submit(fib, num): num for num in nums}
+        for f in as_completed(futures):
+            try:
+                LOGGER.info('%s result is %s', futures[f], f.result())
+            except Exception as e:
+                LOGGER.error('%s result False' % futures[f], e)
+    print('COST: {}'.format(time.time() - start))
+
 
 
 def sync():
@@ -121,6 +137,9 @@ def sync_process_2():
     # 我们用一个进程作为服务器，建立Manager来真正存放资源。其它的进程可以通过参数传递或者根据地址来访问Manager，
     # 建立连接后，操作服务器上的资源
     # 嵌套共享数据也必须使用mananger生成
+
+    # Data can be stored in a shared memory map using Value or Array. 
+    # 只有Value和Array可以共享，且必须作为参数传入进程
     server = multiprocessing.Manager()
     x    = server.Value('d', 0.0)
     arr  = server.Array('i', range(10))
