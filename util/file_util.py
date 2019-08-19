@@ -5,14 +5,17 @@ import threading
 
 LOCK = threading.RLock()
 
-def get_files(path): 
+def get_files(path, file_filter=None): 
     ret = [] 
     if os.path.isfile(path):
-        ret.append(path)
+        if None==file_filter or file_filter(path):
+            ret.append(path)
     else:
         for root, dirs, files in os.walk(path): 
-            for fn in files: 
-                ret.append(os.path.join(root,fn)) 
+            for f in files: 
+                filename = os.path.join(root,f)
+                if None==file_filter or file_filter(filename):
+                    ret.append(filename)
     return ret  
 
 def get_dirs(path): 
@@ -137,6 +140,25 @@ def increment_for_dict(stat_dict, stat_dict2):
     return increment_dict
 
 
+# 合并文件内容，
+# simplify, True表示使用文件名，Flase表示使用文件全路径
+def merge_files(base_path, output_path, simplify, file_filter, line_filter):
+    file_paths = get_files(base_path, file_filter)
+    output_file = open(output_path, mode='w', encoding='utf-8')
+    for file_path in file_paths:
+        if simplify:
+            file_name = os.path.basename(file_path)
+        else:
+            file_name = os.path.abspath(file_path)
+        if not file_filter(file_name):
+            continue
+        with open(file_path, mode='r', encoding='utf-8') as f:
+            for x in f:
+                if not line_filter(x):
+                    continue
+                output_file.write('{}\t{}'.format(file_name, x))
+    output_file.close()
+    
 if __name__ == '__main__':
     files = get_files('../')
     for f in files:
