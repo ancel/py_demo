@@ -32,16 +32,6 @@ def ensure_dir(file_path):
         if ''!=directory and not os.path.exists(directory):
             os.makedirs(directory)
 
-def get_relative_path(parent_path, child_path):
-    parent_path = os.path.abspath(parent_path)
-    child_path = os.path.abspath(child_path)
-    if not child_path.startswith(parent_path):
-        raise Exception('path can not be relative')
-    relative_path = child_path[len(parent_path):]
-    if relative_path.startswith('/'):
-        relative_path = relative_path[1:]
-    return relative_path
-
 # 通过tail获取最后行
 def get_tail_lines(file_path, line_count):
     res = subprocess.Popen('tail -{} {}'.format(str(line_count),file_path),
@@ -139,7 +129,6 @@ def increment_for_dict(stat_dict, stat_dict2):
     # increment_list= sorted(increment_dict.items(),key=lambda d:d[1], reverse=True)
     return increment_dict
 
-
 # 合并文件内容，
 # simplify, True表示使用文件名，Flase表示使用文件全路径
 def merge_files(base_path, output_path, simplify, file_filter, line_filter):
@@ -158,7 +147,31 @@ def merge_files(base_path, output_path, simplify, file_filter, line_filter):
                     continue
                 output_file.write('{}\t{}'.format(file_name, x))
     output_file.close()
-    
+
+def file_generator(dirname, file_filter=None):
+    filenames = get_files(dirname)
+    for filename in filenames:
+        yield filename
+
+def line_generator(dirname, file_filter=None, line_filter=None):
+    for filename in file_generator(dirname):
+        with open(filename, mode='r', encoding='utf-8') as f:
+            for line in f:
+                if None!=line_filter and False==line_filter(line):
+                    continue
+                yield line, filename
+
+def get_file_line_count(dirname, file_filter=None, line_filter=None):
+    file_line_count = dict()
+    for line, filename in line_generator(dirname):
+        if filename not in file_line_count:
+            file_line_count[filename] = 0
+        file_line_count[filename] += 1
+    return file_line_count
+            
+
+
+
 if __name__ == '__main__':
     files = get_files('../')
     for f in files:
@@ -171,7 +184,3 @@ if __name__ == '__main__':
     print(get_last_line('date_util.py'))
     print(get_last_not_blank_line('date_util.py'))
     print(get_line_count('file_util.py'))
-
-    
-    
-
