@@ -34,5 +34,5 @@ def insert(strs):
     conn.close()
 
 if __name__ == '__main__':
-	log_date = datetime.datetime.strptime('2017-05-21','%Y-%m-%d')
-	print(get_count(log_date))
+    log_date = datetime.datetime.strptime('2017-05-21','%Y-%m-%d')
+    print(get_count(log_date))
