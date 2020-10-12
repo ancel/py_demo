@@ -1,10 +1,7 @@
 import logging
 import logging.config
 import log_demo_sub
-
-
-
-
+import traceback
 
 # logging.basicConfig(level=logging.DEBUG,
 #                 format='[%(levelname)s] %(asctime)s %(filename)s %(lineno)d %(message)s',
@@ -26,6 +23,23 @@ LOGGER.debug('This is debug message')
 LOGGER.info('This is info message')
 LOGGER.warning('This is warning message')
 LOGGER.error('This is error message')
+try:
+    raise ValueError('A error happend !')
+except ValueError as e:
+    LOGGER.error("error 1")
+    print('----')
+    LOGGER.error(str(e))
+    print('----')
+    LOGGER.error("error 2", exc_info=True)
+    print('----')
+    LOGGER.exception('error 3')
+    print('----')
+    # 打印详细日志 方法1
+    traceback.print_exc()
+    print('----')
+    # 打印详细日志 方法2
+    e_detail = traceback.format_exc()
+    print(e_detail)
 
 
 log_demo_sub.say()
