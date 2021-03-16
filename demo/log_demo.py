@@ -25,7 +25,10 @@ LOGGER = logging.getLogger(__name__)
 LOGGER.debug('This is debug message')
 LOGGER.info('This is info message')
 LOGGER.warning('This is warning message')
-LOGGER.error('This is error message')
-
+try:
+    raise Exception()
+except Exception as e:
+    LOGGER.error('This is error message', exc_info=True)
+    LOGGER.exception('This is exception message')
 
 log_demo_sub.say()

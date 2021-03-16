@@ -34,3 +34,32 @@ start = datetime.datetime.strptime(d, '%Y-%m-%d %H:%M:%S')
 d = '2017-05-21 14:00:00'
 end = datetime.datetime.strptime(d, '%Y-%m-%d %H:%M:%S')
 print(start<end)
+
+import datetime
+ 
+# 获取今天（现在时间）
+today = datetime.datetime.today()
+# 昨天
+yesterday = today - datetime.timedelta(days=1)
+# 明天
+tomorrow = today + datetime.timedelta(days=1)
+ 
+# 获取当前日期
+date = datetime.date.today()
+# 获取一秒后的时间
+s = today + datetime.timedelta(seconds=1)
+# 获取一分钟后的时间
+m = today + datetime.timedelta(minutes=1)
+# 获取一小时后的时间
+h = today + datetime.timedelta(hours=1)
+# 获取一年后的时间
+y = today + datetime.timedelta(days=365)
+ 
+print('获取今天（现在时间）：{}\n'.format(today),
+      '昨天：{}\n'.format(yesterday),
+      '明天：{}\n'.format(tomorrow),
+      '获取当前日期：{}\n'.format(date.strftime('%Y%m%d')),
+      '一秒后的时间：{}\n'.format(s),
+      '一分钟后的时间：{}\n'.format(m),
+      '一小时后的时间：{}\n'.format(h),
+      '一年后的时间：{}'.format(y))
