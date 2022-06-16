@@ -107,27 +107,13 @@ def add(n):
     global sum
     sum = sum+n
 
-def sync_process():
-    import time
-    from concurrent.futures import ProcessPoolExecutor, as_completed
-    import multiprocessing
-    manager = multiprocessing.Manager()
-    sum = manager.Value('i',0)
-    nums = []
-    for i in range(100): 
-        nums.append(1)
-    start = time.time()
-    with ProcessPoolExecutor(max_workers=3) as executor:
-        executor.map(add, nums)
-    print(sum.value)
-    print('COST: {}'.format(time.time() - start))
-
-def f(x, arr, l):
+def f(x, arr, l, d):
     x.value = 3.14
     arr[0] = 5
     l.append('Hello')
+    d['key'] = 'value'
 
-def sync_process_2():
+def sync_process():
     import multiprocessing
 
     # 1、在主进程的内存空间中创建共享的内存
@@ -138,20 +124,20 @@ def sync_process_2():
     # 建立连接后，操作服务器上的资源
     # 嵌套共享数据也必须使用mananger生成
 
-    # Data can be stored in a shared memory map using Value or Array. 
-    # 只有Value和Array可以共享，且必须作为参数传入进程
     server = multiprocessing.Manager()
     x    = server.Value('d', 0.0)
     arr  = server.Array('i', range(10))
     l    = server.list()
+    d = server.dict()
 
-    proc = multiprocessing.Process(target=f, args=(x, arr, l))
+    proc = multiprocessing.Process(target=f, args=(x, arr, l, d))
     proc.start()
     proc.join()
 
     print(x.value)
     print(arr)
     print(l)
+    print(d)
 
 def sync_thread():
     import time
@@ -168,8 +154,10 @@ def sync_thread():
 
 
 
-def add_item(s):
-    pv_dif_dict[s] = 1
+def add_item(pv_dif_dict, ss):
+    print(ss)
+    for s in ss:
+        pv_dif_dict[s] = 1
 if __name__ == '__main__':
     # multi_thread()
     # multi_process()
@@ -177,20 +165,8 @@ if __name__ == '__main__':
     # multi_thread_pool()
     # multi_thread_pool_2()
     # sync()
-    sync_process_2()
-    # sync_process()
+    sync_process()
     # sync_thread()
-    from concurrent.futures import ProcessPoolExecutor, as_completed
-    import multiprocessing
-    manager = multiprocessing.Manager()
-    pv_dif_dict = manager.dict()
-    ss = []
-    ss.append('123')
-    ss.append('345')
-    ss.append('678')
-    with ProcessPoolExecutor(max_workers=8) as executor:
-        executor.map(add_item, ss)
-    print(pv_dif_dict)
 
     
 

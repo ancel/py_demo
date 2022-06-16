@@ -28,7 +28,7 @@ LOGGER.warning('This is warning message')
 try:
     raise Exception()
 except Exception as e:
-    LOGGER.error('This is error message', exc_info=True)
+    # LOGGER.error('This is error message', exc_info=True)
     LOGGER.exception('This is exception message')
 
 log_demo_sub.say()

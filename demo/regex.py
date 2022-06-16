@@ -51,3 +51,9 @@ print(result2)
 it = re.finditer(r"\d+","12a32bc43jf3") 
 for match in it: 
     print(match.group())
+
+# 查找子字符串所有index
+line = "00100100";
+sub_line = '00100'
+r = [m.start() for m in re.finditer(f'(?={sub_line})', line)]
+print(r)

@@ -10,6 +10,10 @@ def sha1(target):
     h.update(target.encode("utf-8"))
     return h.hexdigest()
 
+def sha256(target):
+    h = hashlib.sha256()
+    h.update(target.encode("utf-8"))
+    return h.hexdigest()
 
 if __name__=='__main__':
     target = '123'
