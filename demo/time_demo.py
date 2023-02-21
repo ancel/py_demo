@@ -63,3 +63,10 @@ print('获取今天（现在时间）：{}\n'.format(today),
       '一分钟后的时间：{}\n'.format(m),
       '一小时后的时间：{}\n'.format(h),
       '一年后的时间：{}'.format(y))
+
+# 时间戳转日期
+import datetime
+timeStamp = 1557502800
+dateArray = datetime.datetime.utcfromtimestamp(timeStamp)
+otherStyleTime = dateArray.strftime("%Y-%m-%d %H:%M:%S")
+print(otherStyleTime)

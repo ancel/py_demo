@@ -29,6 +29,6 @@ try:
     raise Exception()
 except Exception as e:
     # LOGGER.error('This is error message', exc_info=True)
-    LOGGER.exception('This is exception message')
+    LOGGER.exception('This is exception message, name=%s', '123')
 
 log_demo_sub.say()

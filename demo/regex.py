@@ -1,9 +1,13 @@
 import re
 
+# replace
 tel_num = '010-10101010'
 tel_num = re.subn('[^\d]', '', tel_num)[0]
 print(tel_num)
-print(re.match('com', 'www.runoob.com'))   # 需要从起始位置匹配
+
+# split
+tel = '18248384538|13124093284|13124093248,13124093248'
+print(re.split(r'(?:\||,)', tel))
 
 
 # match
