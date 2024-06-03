@@ -33,6 +33,24 @@ def insert(strs):
     cur.close()
     conn.close()
 
+def insert_batch(data):
+    conn = get_conn()
+    cur = conn.cursor()
+    sql = 'INSERT IGNORE INTO {} (tel, oper, create_time) VALUES (%s, %s, %s)'.format(table_name)
+    cur.executemany(sql, data)
+    conn.commit()
+    cur.close()
+    conn.close() 
+
+def insert_or_update_batch(data):
+    conn = get_conn()
+    cur = conn.cursor()
+    sql = 'INSERT INTO {} (tel, oper, create_time, update_time) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY update oper=values(oper), update_time=values(update_time)'.format(table_name)
+    cur.executemany(sql, data)
+    conn.commit()
+    cur.close()
+    conn.close() 
+
 if __name__ == '__main__':
     log_date = datetime.datetime.strptime('2017-05-21','%Y-%m-%d')
     print(get_count(log_date))

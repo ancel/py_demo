@@ -1,0 +1,6 @@
+python环境安装：
+sudo yum install python3-pip
+pip3 install virtualenv
+
+问题：use_2to3 is invalid.
+pip install setuptools==57.5.0
